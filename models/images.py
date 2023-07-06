@@ -37,7 +37,7 @@ class ImagesDao:
                 if image.shows == 0:
                     self.images.pop(0)
                 return image.image_url
-        raise Exception('Nothing to show')
+        return None
 
 
 if __name__ == '__main__':

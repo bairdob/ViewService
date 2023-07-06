@@ -32,6 +32,8 @@ def index():
 
     # если можем получаем картинку
     image = data.get_image_by_categories(categories=categories)
+    if not image:
+        return Response(status=204)
 
     return send_file(
         os.path.join(app.root_path, 'static', image))
