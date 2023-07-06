@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, jsonify, request, send_file
+from flask import Flask, request, send_file, make_response
 
 from error_handler import special_exception_handler
 from models.images import ImagesDao
@@ -16,11 +16,10 @@ data = ImagesDao().load(file_path=images_csv)
 
 @app.route('/static/<path:image_url>;<int:amount_shows>;<string:categories>')
 def serve_static_image(image_url, amount_shows, categories):
-    categories = categories.split(';')
-    return jsonify(
-        image_url=image_url,
-        amount_shows=amount_shows,
-        categories=categories)
+    response = make_response(send_file(os.path.join(app.root_path, 'static', image_url)))
+    response.mimetype = 'image/jpeg'
+    response.headers['Categories'] = categories.split(';')
+    return response
 
 
 @app.route('/', methods=['GET'])
