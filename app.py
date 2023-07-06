@@ -1,6 +1,6 @@
 import os
 
-from flask import Flask, request, send_file, make_response
+from flask import Flask, Response, make_response, request, send_file
 
 from error_handler import special_exception_handler
 from models.images import ImagesDao
@@ -14,8 +14,16 @@ images_csv = os.path.join(app.root_path, 'data', 'images.csv')
 data = ImagesDao().load(file_path=images_csv)
 
 
-@app.route('/static/<path:image_url>;<int:amount_shows>;<string:categories>')
-def serve_static_image(image_url, amount_shows, categories):
+@app.route('/static/<path:image_url>;<int:amount_shows>;<string:categories>', methods=['GET'])
+def serve_static_image(image_url: str, amount_shows: int, categories: str) -> Response:
+    """
+    Возвращает картинку c кастомным хедером категорий.
+
+    :param image_url: имя картинки в папке static
+    :param amount_shows: необходимое количество показов
+    :param categories: категории картинки
+    :return: картинку с кастомным хедером
+    """
     response = make_response(send_file(os.path.join(app.root_path, 'static', image_url)))
     response.mimetype = 'image/jpeg'
     response.headers['Categories'] = categories.split(';')
@@ -23,7 +31,12 @@ def serve_static_image(image_url, amount_shows, categories):
 
 
 @app.route('/', methods=['GET'])
-def index():
+def index() -> Response:
+    """
+    Возвращает картинку, по соответствующей категории.
+
+    :return: картинку
+    """
     categories = request.args.getlist('category[]')
 
     # проверяем допустимое количество запрашиваемых категорий

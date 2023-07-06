@@ -1,6 +1,6 @@
 import csv
 import random
-from typing import TypeVar
+from typing import TypeVar, Optional
 
 from pydantic import BaseModel, Field
 
@@ -8,16 +8,27 @@ T = TypeVar('T', bound='ImagesDao')
 
 
 class Image(BaseModel):
+    """Датакласс картинки"""
     image_url: str  # путь к картинке
     shows: int  # необходимое количество показов
     categories: set[str] = Field(max_length=10)  # категории картинки
 
 
 class ImagesDao:
+    """
+    Класс, отвечающий загрузку данных из файла и
+    отдачу картинки по категориям
+    """
     images = list()  # type: list[Image]
 
     @classmethod
     def load(cls, file_path: str) -> T:
+        """
+        Заполняет список картинок из файла.
+
+        :param file_path: путь до csv файла
+        :return: инстанс классa с заполненными данными
+        """
         result = cls()
         with open(file_path) as csv_file:
             image_reader = csv.reader(csv_file, delimiter=';')
@@ -26,7 +37,15 @@ class ImagesDao:
                 result.images.append(img)
         return result
 
-    def get_image_by_categories(self, categories: list):
+    def get_image_by_categories(self, categories: list) -> Optional[str]:
+        """
+        Находит картинку по категории из данных csv файла.
+
+        Уменьшает вероятность выдачи одной и той же картинки несколько раз подряд,
+        в случае, когда подходящие картинки уже исчерпали свой лимит и вернет ничего
+        :param categories: категории, по которым ищем картинку
+        :return: image_url (имя) картинки
+        """
         # уменьшаем вероятность выдачи одной и той же картинки
         random.shuffle(self.images)
 
