@@ -43,8 +43,11 @@ def index() -> Response:
     if len(categories) > MAX_CATEGORIES:
         raise Exception(f'too much categories, must be less {MAX_CATEGORIES}')
 
-    # если можем получаем картинку
-    image = data.get_image_by_categories(categories=categories)
+    if categories:
+        image = data.get_image_by_categories(categories=categories)
+    else:
+        image = data.get_random_image()
+
     if not image:
         return Response(status=204)
 

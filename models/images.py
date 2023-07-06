@@ -58,6 +58,18 @@ class ImagesDao:
                 return image.image_url
         return None
 
+    def get_random_image(self) -> Optional[str]:
+        """Получаем случайную картинку."""
+        # уменьшаем вероятность выдачи одной и той же картинки
+        random.shuffle(self.images)
+
+        for image in self.images:
+            image.shows -= 1
+            if image.shows == 0:
+                self.images.pop(0)
+            return image.image_url
+        return None
+
 
 if __name__ == '__main__':
     categories = ['flight', 'airplane']
