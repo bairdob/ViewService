@@ -7,9 +7,13 @@ app = Flask(__name__)
 app.errorhandler(Exception)(special_exception_handler)
 
 
-@app.route('/static/<path:filename>;<int:amount_shows>;<string:categories>')
-def serve_static_image(filename, amount_shows, categories):
-    return jsonify(filename, amount_shows, categories)
+@app.route('/static/<path:image_url>;<int:amount_shows>;<string:categories>')
+def serve_static_image(image_url, amount_shows, categories):
+    categories = categories.split(';')
+    return jsonify(
+        image_url=image_url,
+        amount_shows=amount_shows,
+        categories=categories)
 
 
 @app.route('/', methods=['GET'])
