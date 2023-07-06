@@ -1,4 +1,5 @@
 import csv
+import random
 from typing import TypeVar
 
 from pydantic import BaseModel, Field
@@ -26,10 +27,15 @@ class ImagesDao:
         return result
 
     def get_image_by_categories(self, categories: list):
+        # уменьшаем вероятность выдачи одной и той же картинки
+        random.shuffle(self.images)
+
         for image in self.images:
             if set(categories).intersection(image.categories)\
                     and image.shows != 0:
                 image.shows -= 1
+                if image.shows == 0:
+                    self.images.pop(0)
                 return image.image_url
         raise Exception('Nothing to show')
 
