@@ -1,4 +1,6 @@
-from flask import Flask, jsonify, request
+import os
+
+from flask import Flask, jsonify, request, send_file
 
 from error_handler import special_exception_handler
 from models.images import ImagesDao
@@ -24,10 +26,16 @@ def serve_static_image(image_url, amount_shows, categories):
 @app.route('/', methods=['GET'])
 def index():
     categories = request.args.getlist('category[]')
+
     # проверяем допустимое количество запрашиваемых категорий
     if len(categories) > MAX_CATEGORIES:
         raise Exception(f'too much categories, must be less {MAX_CATEGORIES}')
-    return jsonify(categories=categories)
+
+    # если можем получаем картинку
+    image = data.get_image_by_categories(categories=categories)
+
+    return send_file(
+        os.path.join(app.root_path, 'static', image))
 
 
 if __name__ == '__main__':
