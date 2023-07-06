@@ -9,7 +9,7 @@ T = TypeVar('T', bound='ImagesDao')
 class Image(BaseModel):
     image_url: str  # путь к картинке
     shows: int  # необходимое количество показов
-    categories: list[str] = Field(max_length=10)  # категории картинки
+    categories: set[str] = Field(max_length=10)  # категории картинки
 
 
 class ImagesDao:
@@ -17,12 +17,21 @@ class ImagesDao:
 
     @classmethod
     def load(cls, file_path: str) -> T:
+        result = cls()
         with open(file_path) as csv_file:
             image_reader = csv.reader(csv_file, delimiter=';')
             for row in image_reader:
                 img = Image(image_url=row[0], shows=row[1], categories=row[2:])
-                cls.images.append(img)
-        return cls
+                result.images.append(img)
+        return result
+
+    def get_image_by_categories(self, categories: list):
+        for image in self.images:
+            if set(categories).issubset(image.categories)\
+                    and image.shows != 0:
+                image.shows -= 1
+                return image.image_url
+        raise Exception('Nothing to show')
 
 
 if __name__ == '__main__':
@@ -32,3 +41,8 @@ if __name__ == '__main__':
     data = ImagesDao.load(file_path='/Users/bair/ViewService/data/images.csv')
     for image in data.images:
         print(image)
+
+    # ImagesDao().get_image_by_categories(categories=['show'])
+    ImagesDao().get_image_by_categories(categories=['show'])
+    ImagesDao().get_image_by_categories(categories=['tv'])
+    data.get_image_by_categories(categories=['tv'])
