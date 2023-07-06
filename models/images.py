@@ -53,7 +53,7 @@ class ImagesDao:
             if set(categories).intersection(image.categories)\
                     and image.shows != 0:
                 image.shows -= 1
-                if image.shows == 0:
+                if image.shows <= 0:
                     self.images.pop(0)
                 return image.image_url
         return None
@@ -65,7 +65,7 @@ class ImagesDao:
 
         for image in self.images:
             image.shows -= 1
-            if image.shows == 0:
+            if image.shows <= 0:
                 self.images.pop(0)
             return image.image_url
         return None
