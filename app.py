@@ -1,10 +1,15 @@
 from flask import Flask, jsonify, request
 
 from error_handler import special_exception_handler
+from models.images import ImagesDao
 from settings import MAX_CATEGORIES
 
 app = Flask(__name__)
 app.errorhandler(Exception)(special_exception_handler)
+
+# получаем данные csv файла
+images_csv = os.path.join(app.root_path, 'data', 'images.csv')
+data = ImagesDao().load(file_path=images_csv)
 
 
 @app.route('/static/<path:image_url>;<int:amount_shows>;<string:categories>')
