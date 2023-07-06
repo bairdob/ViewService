@@ -27,7 +27,7 @@ class ImagesDao:
 
     def get_image_by_categories(self, categories: list):
         for image in self.images:
-            if set(categories).issubset(image.categories)\
+            if set(categories).intersection(image.categories)\
                     and image.shows != 0:
                 image.shows -= 1
                 return image.image_url
