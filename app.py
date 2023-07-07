@@ -1,6 +1,7 @@
 import os
+from typing import Union
 
-from flask import Flask, Response, make_response, request, send_file
+from flask import Flask, Response, make_response, request, send_file, render_template, url_for
 
 from error_handler import special_exception_handler
 from models.images import ImagesDao
@@ -31,7 +32,7 @@ def serve_static_image(image_url: str, amount_shows: int, categories: str) -> Re
 
 
 @app.route('/', methods=['GET'])
-def index() -> Response:
+def index() -> Union[Response, str]:
     """
     Возвращает картинку, по соответствующей категории.
 
@@ -51,8 +52,7 @@ def index() -> Response:
     if not image:
         return Response(status=204)
 
-    return send_file(
-        os.path.join(app.root_path, 'static', image))
+    return render_template("index.html", image=url_for('static', filename=image))
 
 
 if __name__ == '__main__':

@@ -201,7 +201,7 @@ curl --request GET \
 
 ```bash
 curl --request GET \
-  --url 'http://localhost:8080/?category%5B%5D=auto&category%5B%5D=trains&category%5B%5D=trains&category%5B%5D=trains&category%5B%5D=trains&category%5B%5D=trains&category%5B%5D=trains&category%5B%5D=trains&category%5B%5D=trains&category%5B%5D=trains&category%5B%5D=trains'
+  --url 'http://localhost:8080/static/image1.jpg;500;flight;airlplane'
 ```
 
 </p>
