@@ -30,6 +30,10 @@ class ImagesDao:
         :return: инстанс классa с заполненными данными
         """
         result = cls()
+
+        if result.images:
+            result.images = list()
+
         with open(file_path) as csv_file:
             image_reader = csv.reader(csv_file, delimiter=';')
             for row in image_reader:
